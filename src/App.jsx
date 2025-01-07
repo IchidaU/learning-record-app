@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react'
-import { getAllTodos } from './utils/supabeseFunctions'
+import { getAllLogs } from './utils/supabaseFunctions'
 
 export const App = () => {
   const [records, setRecords] = useState([])
   const [title, setTitle] = useState("")
   const [time, setTime] = useState("")
   const [error, setError] = useState("");
-  const [todos, setTodos] = useState([])
+  const [logs, setLogs] = useState([])
 
   useEffect(() => {
-    const getTodos = async () => {
-      const todos = await getAllTodos()
-      setTodos(todos)
-      console.log(todos)
+    const getLogs = async () => {
+      const logs = await getAllLogs()
+      setLogs(logs)
+      console.log(logs)
     }
-    getTodos()
-  })
+    getLogs()
+  },[])
 
   const onChangeTitle = (e) => setTitle(e.target.value)
   const onChangeTime = (e) => setTime(parseInt(e.target.value))
