@@ -1,73 +1,49 @@
-import { useEffect, useState } from 'react'
-import { getAllLogs } from './utils/supabaseFunctions'
+import { useState } from 'react';
+import { LogDisplay } from './components/LogDisplay';
 
 export const App = () => {
-  const [records, setRecords] = useState([])
-  const [title, setTitle] = useState("")
-  const [time, setTime] = useState("")
-  const [error, setError] = useState("");
-  const [logs, setLogs] = useState([])
+  const [records, setRecords] = useState([]);
+  const [title, setTitle] = useState('');
+  const [time, setTime] = useState('');
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    const getLogs = async () => {
-      const logs = await getAllLogs()
-      setLogs(logs)
-      console.log(logs)
-    }
-    getLogs()
-  },[])
-
-  const onChangeTitle = (e) => setTitle(e.target.value)
-  const onChangeTime = (e) => setTime(parseInt(e.target.value))
+  const onChangeTitle = (e) => setTitle(e.target.value);
+  const onChangeTime = (e) => setTime(parseInt(e.target.value));
 
   const onClickAdd = () => {
-    const newRecord = [...records, { title, time }]
+    const newRecord = [...records, { title, time }];
     if (title && time) {
-      setRecords(newRecord)
-      setTitle("")
-      setTime("")
-      setError("")
+      setRecords(newRecord);
+      setTitle('');
+      setTime('');
+      setError('');
     } else {
-      setError("入力されていない項目があります")
+      setError('入力されていない項目があります');
     }
-  }
+  };
 
-  const total = records.reduce((current, item) => current + item.time, 0)
+  const total = records.reduce((current, item) => current + item.time, 0);
 
   return (
     <div>
       <h1>学習記録一覧</h1>
-        <div>
-          <label>
-            学習内容
-            <input 
-              type="text" 
-              value={title} 
-              onChange={onChangeTitle} 
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            学習時間
-            <input 
-              type="number" 
-              value={time} 
-              onChange={onChangeTime}
-              min="0" 
-            />
-          </label>
-        </div>
-        <button onClick={onClickAdd}>追加</button>
       <div>
-        入力されている学習内容：{title}
+        <label>
+          学習内容
+          <input type="text" value={title} onChange={onChangeTitle} />
+        </label>
       </div>
       <div>
-        入力されている学習時間：{time}
+        <label>
+          学習時間
+          <input type="number" value={time} onChange={onChangeTime} min="0" />
+        </label>
       </div>
-      <div>
-        {error}
-      </div>
+      <div>入力されている学習内容：{title}</div>
+      <div>入力されている学習時間：{time}</div>
+      <div>{error}</div>
+      <LogDisplay />
+      <button onClick={onClickAdd}>登録</button>
       <div>
         <p>合計時間: {total} /1000 (h)</p>
       </div>
@@ -80,7 +56,7 @@ export const App = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
