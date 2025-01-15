@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LogDisplay } from './components/LogDisplay';
+import { LogContent } from './components/LogContent';
 
 export const App = () => {
   const [records, setRecords] = useState([]);
@@ -42,7 +42,7 @@ export const App = () => {
       <div>入力されている学習内容：{title}</div>
       <div>入力されている学習時間：{time}</div>
       <div>{error}</div>
-      <LogDisplay />
+      <LogContent />
       <button onClick={onClickAdd}>登録</button>
       <div>
         <p>合計時間: {total} /1000 (h)</p>
