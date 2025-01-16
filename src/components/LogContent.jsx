@@ -10,14 +10,17 @@ export const LogContent = () => {
 
   useEffect(() => {
     const getLogs = async () => {
-      console.log(isLoading);
-      await sleep(5000);
-      const logs = await getAllLogs();
-      setLogs(logs);
+      try {
+        setIsLoading(true);
+        const fetchedLogs = await getAllLogs();
+        setLogs(fetchedLogs);
+      } catch (error) {
+        console.error('読込エラーです', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     getLogs();
-    setIsLoading(false);
-    console.log(isLoading);
   }, []);
 
   if (isLoading) {
