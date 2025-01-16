@@ -49,7 +49,7 @@ export const App = () => {
       </div>
       <div>
         {records.map((record) => (
-          <div key={record}>
+          <div key={record.id}>
             <h2>{record.title}</h2>
             <p>学習時間: {record.time}時間</p>
           </div>

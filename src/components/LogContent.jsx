@@ -12,6 +12,7 @@ export const LogContent = () => {
     const getLogs = async () => {
       try {
         setIsLoading(true);
+        sleep(3000);
         const fetchedLogs = await getAllLogs();
         setLogs(fetchedLogs);
       } catch (error) {
