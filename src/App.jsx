@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { LogContent } from './components/LogContent';
+import { addRecord } from './utils/supabaseFunctions';
 
 export const App = () => {
   const [records, setRecords] = useState([]);
@@ -10,7 +11,8 @@ export const App = () => {
   const onChangeTitle = (e) => setTitle(e.target.value);
   const onChangeTime = (e) => setTime(parseInt(e.target.value));
 
-  const onClickAdd = () => {
+  const onClickAdd = async () => {
+    await addRecord(title, time);
     const newRecord = [...records, { title, time }];
     if (title && time) {
       setRecords(newRecord);
@@ -49,7 +51,7 @@ export const App = () => {
       </div>
       <div>
         {records.map((record) => (
-          <div key={record.id}>
+          <div key={record}>
             <h2>{record.title}</h2>
             <p>学習時間: {record.time}時間</p>
           </div>
