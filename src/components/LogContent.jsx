@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { getAllLogs } from '../utils/supabaseFunctions';
+import { TotalTimeContext } from '../Providers/TotalTimeProvider';
 
 export const LogContent = () => {
   const [logs, setLogs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { totalTime, setTotalTime } = useContext(TotalTimeContext);
 
   useEffect(() => {
     const getLogs = async () => {
@@ -19,6 +21,19 @@ export const LogContent = () => {
     };
     getLogs();
   }, []);
+
+  useEffect(() => {
+    if (logs && logs.length > 0) {
+      const total = logs.reduce((sum, record) => {
+        console.log('record.time:', record.time);
+        return sum + record.time;
+      }, 0);
+      setTotalTime(total);
+      console.log('Calculated Total Time:', total);
+    } else {
+      setTotalTime(0);
+    }
+  }, [logs]);
 
   return isLoading ? (
     <div>Loading...</div>

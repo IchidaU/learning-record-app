@@ -1,12 +1,17 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { LogContent } from './components/LogContent';
 import { addRecord } from './utils/supabaseFunctions';
+import {
+  TotalTimeContext,
+  TotalTimeProvider,
+} from './Providers/TotalTimeProvider';
 
 export const App = () => {
   const [records, setRecords] = useState([]);
   const [title, setTitle] = useState('');
   const [time, setTime] = useState('');
   const [error, setError] = useState('');
+  const { totalTime } = useContext(TotalTimeContext);
 
   const onChangeTitle = (e) => setTitle(e.target.value);
   const onChangeTime = (e) => setTime(parseInt(e.target.value));
@@ -23,8 +28,6 @@ export const App = () => {
       setError('入力されていない項目があります');
     }
   };
-
-  const total = records.reduce((current, item) => current + item.time, 0);
 
   return (
     <div>
@@ -47,7 +50,7 @@ export const App = () => {
       <LogContent />
       <button onClick={onClickAdd}>登録</button>
       <div>
-        <p>合計時間: {total} /1000 (h)</p>
+        <p>合計時間: {totalTime}/1000 (h)</p>
       </div>
       <div>
         {records.map((record) => (
