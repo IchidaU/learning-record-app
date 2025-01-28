@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { getAllLogs } from '../utils/supabaseFunctions';
+import { deleteRecord, getAllLogs } from '../utils/supabaseFunctions';
 import { TotalTimeContext } from '../Providers/TotalTimeProvider';
 
 export const LogContent = () => {
@@ -25,15 +25,18 @@ export const LogContent = () => {
   useEffect(() => {
     if (logs && logs.length > 0) {
       const total = logs.reduce((sum, record) => {
-        console.log('record.time:', record.time);
         return sum + record.time;
       }, 0);
       setTotalTime(total);
-      console.log('Calculated Total Time:', total);
     } else {
       setTotalTime(0);
     }
   }, [logs]);
+
+  const onClickDelete = async (id) => {
+    await deleteRecord(id);
+    setLogs();
+  };
 
   return isLoading ? (
     <div>Loading...</div>
@@ -43,6 +46,7 @@ export const LogContent = () => {
       {logs.map((log) => (
         <p key={log.id}>
           {log.title} {log.time}時間
+          <button onClick={() => onClickDelete(log.id)}>削除</button>
         </p>
       ))}
     </div>

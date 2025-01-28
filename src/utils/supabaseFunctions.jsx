@@ -11,3 +11,7 @@ export const addRecord = async (title, time) => {
     .insert([{ title: title, time: time }])
     .select();
 };
+
+export const deleteRecord = async (id) => {
+  await supabase.from('study-record').delete().eq('id', id);
+};

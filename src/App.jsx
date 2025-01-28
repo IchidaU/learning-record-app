@@ -1,10 +1,7 @@
 import { useContext, useState } from 'react';
 import { LogContent } from './components/LogContent';
 import { addRecord } from './utils/supabaseFunctions';
-import {
-  TotalTimeContext,
-  TotalTimeProvider,
-} from './Providers/TotalTimeProvider';
+import { TotalTimeContext } from './Providers/TotalTimeProvider';
 
 export const App = () => {
   const [records, setRecords] = useState([]);
