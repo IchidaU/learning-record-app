@@ -34,8 +34,19 @@ export const LogContent = () => {
   }, [logs]);
 
   const onClickDelete = async (id) => {
-    await deleteRecord(id);
-    setLogs();
+    try {
+      await deleteRecord(id);
+      setLogs(logs.filter((log) => log.id !== id));
+
+      const updatedLogs = logs.filter((log) => log.id !== id);
+      const newTotal = updatedLogs.reduce(
+        (sum, record) => sum + record.time,
+        0
+      );
+      setTotalTime(newTotal);
+    } catch (error) {
+      console.error('削除エラーです', error);
+    }
   };
 
   return isLoading ? (
