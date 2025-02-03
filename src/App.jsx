@@ -4,23 +4,27 @@ import { addRecord } from './utils/supabaseFunctions';
 import { TotalTimeContext } from './Providers/TotalTimeProvider';
 
 export const App = () => {
-  const [records, setRecords] = useState([]);
   const [title, setTitle] = useState('');
   const [time, setTime] = useState('');
   const [error, setError] = useState('');
   const { totalTime } = useContext(TotalTimeContext);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const onChangeTitle = (e) => setTitle(e.target.value);
   const onChangeTime = (e) => setTime(parseInt(e.target.value));
 
   const onClickAdd = async () => {
-    await addRecord(title, time);
-    const newRecord = [...records, { title, time }];
     if (title && time) {
-      setRecords(newRecord);
-      setTitle('');
-      setTime('');
-      setError('');
+      try {
+        await addRecord(title, time);
+        setTitle('');
+        setTime('');
+        setError('');
+        setRefreshTrigger((prev) => prev + 1);
+      } catch (error) {
+        console.error('登録エラーです', error);
+        setError('登録に失敗しました');
+      }
     } else {
       setError('入力されていない項目があります');
     }
@@ -44,18 +48,10 @@ export const App = () => {
       <div>入力されている学習内容：{title}</div>
       <div>入力されている学習時間：{time}</div>
       <div>{error}</div>
-      <LogContent />
+      <LogContent refreshTrigger={refreshTrigger} />
       <button onClick={onClickAdd}>登録</button>
       <div>
         <p>合計時間: {totalTime}/1000 (h)</p>
-      </div>
-      <div>
-        {records.map((record) => (
-          <div key={record}>
-            <h2>{record.title}</h2>
-            <p>学習時間: {record.time}時間</p>
-          </div>
-        ))}
       </div>
     </div>
   );

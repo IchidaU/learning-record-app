@@ -2,48 +2,33 @@ import { useState, useEffect, useContext } from 'react';
 import { deleteRecord, getAllLogs } from '../utils/supabaseFunctions';
 import { TotalTimeContext } from '../Providers/TotalTimeProvider';
 
-export const LogContent = () => {
+export const LogContent = ({ refreshTrigger }) => {
   const [logs, setLogs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { totalTime, setTotalTime } = useContext(TotalTimeContext);
 
-  useEffect(() => {
-    const getLogs = async () => {
-      try {
-        setIsLoading(true);
-        const fetchedLogs = await getAllLogs();
-        setLogs(fetchedLogs);
-      } catch (error) {
-        console.error('読込エラーです', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    getLogs();
-  }, []);
+  const getLogs = async () => {
+    try {
+      setIsLoading(true);
+      const fetchedLogs = await getAllLogs();
+      setLogs(fetchedLogs);
+      const total = fetchedLogs.reduce((sum, record) => sum + record.time, 0);
+      setTotalTime(total);
+    } catch (error) {
+      console.error('読込エラーです', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (logs && logs.length > 0) {
-      const total = logs.reduce((sum, record) => {
-        return sum + record.time;
-      }, 0);
-      setTotalTime(total);
-    } else {
-      setTotalTime(0);
-    }
-  }, [logs]);
+    getLogs();
+  }, [refreshTrigger]);
 
   const onClickDelete = async (id) => {
     try {
       await deleteRecord(id);
-      setLogs(logs.filter((log) => log.id !== id));
-
-      const updatedLogs = logs.filter((log) => log.id !== id);
-      const newTotal = updatedLogs.reduce(
-        (sum, record) => sum + record.time,
-        0
-      );
-      setTotalTime(newTotal);
+      await getLogs();
     } catch (error) {
       console.error('削除エラーです', error);
     }
