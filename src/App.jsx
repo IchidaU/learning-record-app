@@ -32,7 +32,7 @@ export const App = () => {
 
   return (
     <div>
-      <h1>学習記録一覧</h1>
+      <h1>学習記録アプリ</h1>
       <div>
         <label>
           学習内容
