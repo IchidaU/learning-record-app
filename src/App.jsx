@@ -31,29 +31,32 @@ export const App = () => {
   };
 
   return (
-    <div>
-      <h1>学習記録アプリ</h1>
+    <>
+      <title data-testid="title">Hello Jest</title>
       <div>
-        <label>
-          学習内容
-          <input type="text" value={title} onChange={onChangeTitle} />
-        </label>
+        <h1>学習記録アプリ</h1>
+        <div>
+          <label>
+            学習内容
+            <input type="text" value={title} onChange={onChangeTitle} />
+          </label>
+        </div>
+        <div>
+          <label>
+            学習時間
+            <input type="number" value={time} onChange={onChangeTime} min="0" />
+          </label>
+        </div>
+        <div>入力されている学習内容：{title}</div>
+        <div>入力されている学習時間：{time}</div>
+        <div>{error}</div>
+        <LogContent refreshTrigger={refreshTrigger} />
+        <button onClick={onClickAdd}>登録</button>
+        <div>
+          <p>合計時間: {totalTime}/1000 (h)</p>
+        </div>
       </div>
-      <div>
-        <label>
-          学習時間
-          <input type="number" value={time} onChange={onChangeTime} min="0" />
-        </label>
-      </div>
-      <div>入力されている学習内容：{title}</div>
-      <div>入力されている学習時間：{time}</div>
-      <div>{error}</div>
-      <LogContent refreshTrigger={refreshTrigger} />
-      <button onClick={onClickAdd}>登録</button>
-      <div>
-        <p>合計時間: {totalTime}/1000 (h)</p>
-      </div>
-    </div>
+    </>
   );
 };
 
