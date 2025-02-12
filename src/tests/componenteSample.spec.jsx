@@ -8,6 +8,6 @@ describe('Title Test', () => {
     // testId(title)を指定して取得
     render(<App />);
     const title = screen.getByTestId('title');
-    expect(title).toHaveTextContent('Hello Jest');
+    await expect(title).toHaveTextContent('Hello Jest');
   });
 });

@@ -40,7 +40,7 @@ export const LogContent = ({ refreshTrigger }) => {
     <div>
       <h2>学習記録一覧</h2>
       {logs.map((log) => (
-        <p key={log.id}>
+        <p key={log.id} data-testid="log">
           {log.title} {log.time}時間
           <button onClick={() => onClickDelete(log.id)}>削除</button>
         </p>
