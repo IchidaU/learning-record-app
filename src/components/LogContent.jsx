@@ -34,6 +34,11 @@ export const LogContent = ({ refreshTrigger }) => {
     }
   };
 
+  const addNewLog = async (title, time) => {
+    await addRecord(title, time);
+    getLogs();
+  };
+
   return isLoading ? (
     <div>Loading...</div>
   ) : (
