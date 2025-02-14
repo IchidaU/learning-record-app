@@ -6,15 +6,15 @@ import { addRecord, getAllLogs } from '../utils/supabaseFunctions';
 
 jest.setTimeout(20000);
 
+const mockLogs = [{ id: 1, title: 'test', time: 1 }];
+
 jest.mock('../utils/supabaseFunctions', () => ({
-  getAllLogs: jest
-    .fn()
-    .mockResolvedValueOnce([{ id: 1, title: 'test', time: 1 }])
-    .mockResolvedValueOnce([
-      { id: 1, title: 'test', time: 1 },
-      { id: 2, title: 'test2', time: 2 },
-    ]),
-  addRecord: jest.fn().mockResolvedValue({ id: 2, title: 'test2', time: 2 }),
+  getAllLogs: jest.fn(() => Promise.resolve(mockLogs)),
+  addRecord: jest.fn((title, time) => {
+    const newLog = { id: mockLogs.length + 1, title, time };
+    mockLogs.push(newLog);
+    return Promise.resolve(newLog);
+  }),
 }));
 
 describe('動作テスト', () => {
@@ -45,7 +45,7 @@ describe('動作テスト', () => {
         const logs = screen.getAllByTestId('log');
         expect(logs).toHaveLength(2);
       },
-      { timeout: 10000 }
+      { timeout: 5000 }
     );
 
     const logs = screen.getAllByTestId('log');
