@@ -1,21 +1,38 @@
 import '@testing-library/jest-dom';
-import { screen, fireEvent, render, waitFor } from '@testing-library/react';
+import {
+  screen,
+  fireEvent,
+  render,
+  waitFor,
+  cleanup,
+} from '@testing-library/react';
 import App from '../App';
 import { TotalTimeProvider } from '../Providers/TotalTimeProvider';
-import { getAllLogs } from '../utils/supabaseFunctions';
-import { onClickDelete } from '../components/LogContent';
+import { deleteRecord, getAllLogs } from '../utils/supabaseFunctions';
 
 jest.setTimeout(20000);
 
-const mockLogs = [
-  { id: 1, title: 'test', time: 1 },
-  { id: 2, title: 'test2', time: 2 },
-];
+let mockLogs = [];
 
 jest.mock('../utils/supabaseFunctions', () => ({
   getAllLogs: jest.fn(() => Promise.resolve(mockLogs)),
-  onClickDelete: jest.fn(() => {}),
+  deleteRecord: jest.fn((id) => {
+    mockLogs = mockLogs.filter((log) => log.id !== id);
+    return Promise.resolve();
+  }),
 }));
+
+beforeEach(() => {
+  mockLogs = [
+    { id: 1, title: 'test1', time: 1 },
+    { id: 2, title: 'test2', time: 2 },
+  ];
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
+  cleanup();
+});
 
 describe('動作テスト', () => {
   it('記録削除', async () => {
@@ -37,7 +54,7 @@ describe('動作テスト', () => {
 
     await waitFor(
       () => {
-        const logs = screen.getByTestId('log');
+        const logs = screen.getAllByTestId('log');
         expect(logs).toHaveLength(1);
       },
       { timeout: 5000 }
@@ -46,7 +63,7 @@ describe('動作テスト', () => {
     const logs = screen.getAllByTestId('log');
     expect(logs[0]).toHaveTextContent('test1 1時間');
 
-    expect(onClickDelete).toHaveBeenCalledWith(mockLogs[1].id);
-    expect(getAllLogs).toHaveBeenCalledTimes(1);
+    expect(deleteRecord).toHaveBeenCalledWith(2);
+    expect(getAllLogs).toHaveBeenCalledTimes(2);
   });
 });
