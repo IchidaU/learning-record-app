@@ -2,56 +2,67 @@ import '@testing-library/jest-dom';
 import { screen, fireEvent, render, waitFor } from '@testing-library/react';
 import App from '../App';
 import { TotalTimeProvider } from '../Providers/TotalTimeProvider';
-import { addRecord, getAllLogs } from '../utils/supabaseFunctions';
-
-jest.setTimeout(20000);
-
-const mockLogs = [{ id: 1, title: 'test', time: 1 }];
+import { getAllLogs } from '../utils/supabaseFunctions';
 
 jest.mock('../utils/supabaseFunctions', () => ({
-  getAllLogs: jest.fn(() => Promise.resolve(mockLogs)),
-  addRecord: jest.fn((title, time) => {
-    const newLog = { id: mockLogs.length + 1, title, time };
-    mockLogs.push(newLog);
-    return Promise.resolve(newLog);
-  }),
+  getAllLogs: jest.fn(() => Promise.resolve([])),
+  onClickAdd: jest.fn(() => Promise.resolve()),
 }));
 
 describe('動作テスト', () => {
-  it('記録追加', async () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('titleエラー', async () => {
     render(
       <TotalTimeProvider>
         <App />
       </TotalTimeProvider>
     );
 
-    await waitFor(
-      () => {
-        expect(screen.getByTestId('log')).toHaveTextContent('test 1時間');
-      },
-      { timeout: 5000 }
-    );
-
     fireEvent.change(screen.getByLabelText('学習内容'), {
-      target: { value: 'test2' },
+      target: { value: '' },
     });
     fireEvent.change(screen.getByLabelText('学習時間'), {
-      target: { value: '2' },
+      target: { value: '1' },
     });
     fireEvent.click(screen.getByText('登録'));
 
-    await waitFor(
-      () => {
-        const logs = screen.getAllByTestId('log');
-        expect(logs).toHaveLength(2);
-      },
-      { timeout: 5000 }
+    await waitFor(() => {
+      const error = screen.getByText('入力されていない項目があります');
+      expect(error).toBeInTheDocument();
+    });
+
+    const logs = screen.queryAllByTestId('log');
+    expect(logs).toHaveLength(0);
+
+    expect(getAllLogs).toHaveBeenCalledTimes(1);
+  });
+
+  it('timeエラー', async () => {
+    render(
+      <TotalTimeProvider>
+        <App />
+      </TotalTimeProvider>
     );
 
-    const logs = screen.getAllByTestId('log');
-    expect(logs[1]).toHaveTextContent('test2 2時間');
+    fireEvent.change(screen.getByLabelText('学習内容'), {
+      target: { value: 'test' },
+    });
+    fireEvent.change(screen.getByLabelText('学習時間'), {
+      target: { value: '' },
+    });
+    fireEvent.click(screen.getByText('登録'));
 
-    expect(addRecord).toHaveBeenCalledWith('test2', 2);
-    expect(getAllLogs).toHaveBeenCalledTimes(2);
+    await waitFor(() => {
+      const error = screen.getByText('入力されていない項目があります');
+      expect(error).toBeInTheDocument();
+    });
+
+    const logs = screen.queryAllByTestId('log');
+    expect(logs).toHaveLength(0);
+
+    expect(getAllLogs).toHaveBeenCalledTimes(1);
   });
 });
