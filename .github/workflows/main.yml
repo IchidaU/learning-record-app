@@ -2,7 +2,6 @@ name: Lerning Record App CD
 
 on:
   push:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
