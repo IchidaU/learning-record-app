@@ -2,6 +2,7 @@ name: Lerning Record App CD
 
 on:
   push:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -19,6 +20,9 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Run Tests
+        run: npm run test
 
       - name: Run Build
         run: npm run build
