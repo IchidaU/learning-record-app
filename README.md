@@ -1,8 +1,45 @@
-# React + Vite
+# 学習記録アプリ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- 学習内容や時間を記録できるWebアプリです。
+- 読書・ゲームプレイなど学習記録以外にも利用できます。
 
-Currently, two official plugins are available:
+## サービスの説明
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+搭載機能
+
+- 記録（内容・時間）機能
+  - 記録追加
+    - 入力フォームに内容・時間を入力して登録ボタンを押すと記録が追加されます。
+  - 一覧表示
+  - 削除
+    - 一覧表示された各記録の横にある削除ボタンを押すと記録が削除されます。
+- 累積時間積算・表示機能
+- 下記の場合にエラー表示される機能
+  - 内容・時間いずれかが未記入
+  - 時間が数値以外
+
+## 環境設定の方法(.envなど)
+
+- 環境変数の設定
+  - `.env`ファイルをプロジェクトルートに作成し、以下の内容を記述します：
+
+```
+VITE_SUPABASE_URL="https://example.supabase.co"
+VITE_SUPABASE_ANON_KEY="example"
+```
+
+## 起動の仕方
+
+1. 依存関係のインストール
+
+   ```sh
+   npm install
+   ```
+
+2. 起動
+
+   ```sh
+   npm run dev
+   ```
+
+3. `http://localhost:5173/` にアクセスします。
