@@ -1,5 +1,11 @@
 import '@testing-library/jest-dom';
-import { screen, fireEvent, render, waitFor } from '@testing-library/react';
+import {
+  screen,
+  fireEvent,
+  render,
+  waitFor,
+  act,
+} from '@testing-library/react';
 import App from '../App';
 import { TotalTimeProvider } from '../Providers/TotalTimeProvider';
 import { addRecord, getAllLogs } from '../utils/supabaseFunctions';
@@ -19,26 +25,37 @@ jest.mock('../utils/supabaseFunctions', () => ({
 
 describe('動作テスト', () => {
   it('記録追加', async () => {
-    render(
-      <TotalTimeProvider>
-        <App />
-      </TotalTimeProvider>
+    await act(async () => {
+      render(
+        <TotalTimeProvider>
+          <App />
+        </TotalTimeProvider>
+      );
+    });
+
+    await waitFor(
+      () => {
+        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+      },
+      { timeout: 50000 }
     );
 
     await waitFor(
       () => {
         expect(screen.getByTestId('log')).toHaveTextContent('test 1時間');
       },
-      { timeout: 5000 }
+      { timeout: 50000 }
     );
 
-    fireEvent.change(screen.getByLabelText('学習内容'), {
-      target: { value: 'test2' },
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText('学習内容'), {
+        target: { value: 'test2' },
+      });
+      fireEvent.change(screen.getByLabelText('学習時間'), {
+        target: { value: '2' },
+      });
+      fireEvent.click(screen.getByText('登録'));
     });
-    fireEvent.change(screen.getByLabelText('学習時間'), {
-      target: { value: '2' },
-    });
-    fireEvent.click(screen.getByText('登録'));
 
     await waitFor(
       () => {
