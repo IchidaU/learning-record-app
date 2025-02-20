@@ -32,9 +32,8 @@ export const App = () => {
 
   return (
     <>
-      <title data-testid="title">Hello Jest</title>
       <div>
-        <h1>学習記録アプリ</h1>
+        <h1 data-testid="title">学習記録アプリ</h1>
         <div>
           <label>
             学習内容
