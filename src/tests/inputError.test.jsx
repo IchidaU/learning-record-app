@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import { screen, fireEvent, render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import App from '../App';
 import { TotalTimeProvider } from '../Providers/TotalTimeProvider';
 import { getAllLogs } from '../utils/supabaseFunctions';
@@ -10,6 +11,8 @@ jest.mock('../utils/supabaseFunctions', () => ({
 }));
 
 describe('動作テスト', () => {
+  const user = userEvent.setup();
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -21,13 +24,8 @@ describe('動作テスト', () => {
       </TotalTimeProvider>
     );
 
-    fireEvent.change(screen.getByLabelText('学習内容'), {
-      target: { value: '' },
-    });
-    fireEvent.change(screen.getByLabelText('学習時間'), {
-      target: { value: '1' },
-    });
-    fireEvent.click(screen.getByText('登録'));
+    await user.type(screen.getByLabelText('学習時間'), '1');
+    await user.click(screen.getByText('登録'));
 
     await waitFor(() => {
       const error = screen.getByText('入力されていない項目があります');
@@ -47,13 +45,8 @@ describe('動作テスト', () => {
       </TotalTimeProvider>
     );
 
-    fireEvent.change(screen.getByLabelText('学習内容'), {
-      target: { value: 'test' },
-    });
-    fireEvent.change(screen.getByLabelText('学習時間'), {
-      target: { value: '' },
-    });
-    fireEvent.click(screen.getByText('登録'));
+    await user.type(screen.getByLabelText('学習内容'), 'test1');
+    await user.click(screen.getByText('登録'));
 
     await waitFor(() => {
       const error = screen.getByText('入力されていない項目があります');
